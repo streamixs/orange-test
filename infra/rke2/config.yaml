@@ -1,0 +1,23 @@
+node-name: rke2-node01
+
+# l'IP LAN que le noeud annonce : celle du kubeconfig et du ServiceLB
+node-ip: 192.168.1.169
+
+# IP et FQDN
+tls-san:
+  - 192.168.1.169
+  - rke2-node01.lab.local
+
+write-kubeconfig_mode: "0600"
+
+node-label:
+  - topology.lab/role=all-in-one
+
+# mono-noeud
+etcd-snapshot-compress: true
+
+# j'utilise le ServiceLB de RKE2 pour exposer Traefik
+enable-servicelb: true
+
+# j'utilise Traefik comme Ingress Controller, pas Nginx
+ingress-controller: traefik

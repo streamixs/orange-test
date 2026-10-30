@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+  - frontend-ingress.yaml
+  - https://raw.githubusercontent.com/GoogleCloudPlatform/microservices-demo/refs/heads/main/release/kubernetes-manifests.yaml
+
+
+patches:
+  - patch: frontend-external.yaml
+    target:
+      kind: Service
+      name: frontend-external

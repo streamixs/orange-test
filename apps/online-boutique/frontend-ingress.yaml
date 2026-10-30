@@ -5,6 +5,7 @@ metadata:
   namespace: online-boutique
 
 spec:
+  ingressClassName: traefik
   rules:
     - host: boutique.lab.local
       http:

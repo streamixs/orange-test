@@ -12,7 +12,7 @@ resources:
 
 
 patches:
-  - patch: frontend-external.yaml
+  - path: frontend-external.yaml
     target:
       kind: Service
       name: frontend-external

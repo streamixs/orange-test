@@ -1,8 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+metadata:
+  name: online-boutique
+  namespace: online-boutique
+
 resources:
-  - namespace.yaml
+  - namespaces.yaml
   - frontend-ingress.yaml
   - https://raw.githubusercontent.com/GoogleCloudPlatform/microservices-demo/refs/heads/main/release/kubernetes-manifests.yaml
 

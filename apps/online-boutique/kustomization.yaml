@@ -7,6 +7,7 @@ resources:
   - namespaces.yaml
   - frontend-ingress.yaml
   - https://raw.githubusercontent.com/GoogleCloudPlatform/microservices-demo/refs/heads/main/release/kubernetes-manifests.yaml
+  - mutatingPolicies.yaml
 
 
 patches:

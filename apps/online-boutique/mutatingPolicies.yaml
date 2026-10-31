@@ -1,0 +1,24 @@
+apiVersion: policies.kyverno.io/v1
+Kind: MutationPolicy
+metadata:
+  namespace: online-boutique
+
+spec:
+  matchContainer:
+    resourceRules:
+      - apiGroups: [""]
+        resources: ["pods"]
+        operations: [CREATE]
+  mutations:
+    - patchType: ApplyConfiguration
+      applyConfiguration:
+        expresion: >
+          Object {
+            metadata: {
+              labels: {
+                "app.kubernetes.io/managed-by": "Kyverno"
+                "namespace-name": "{{request.object.metadata.namespace}}
+                "node-name": "{{request.object.spec.nodeName}}"
+              }
+            }
+          }

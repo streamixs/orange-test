@@ -1,28 +1,42 @@
 apiVersion: policies.kyverno.io/v1
-Kind: MutationPolicy
+kind: MutatingPolicy
 metadata:
   name: add-labels
 
 spec:
+  evaluation:
+    mutateExisting:
+      enabled: true
+  # Trigger après scheduling : l'EndpointSlice n'existe qu'une fois le Pod placé.
   matchConstraints:
+    resourceRules:
+      - apiGroups: ["discovery.k8s.io"]
+        apiVersions: ["v1"]
+        resources: ["endpointslices"]
+        operations: ["CREATE", "UPDATE"]
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: online-boutique
+  # Cible : les Pods. Object = le Pod cible, donc spec.nodeName est rempli.
+  targetMatchConstraints:
     resourceRules:
       - apiGroups: [""]
         apiVersions: ["v1"]
         resources: ["pods"]
-        operations: [CREATE]
-  targetMatchConstraints:
-
-
+        operations: ["CREATE", "UPDATE"]
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: online-boutique
   mutations:
     - patchType: ApplyConfiguration
       applyConfiguration:
         expression: >
           Object{
-            metadata: {
-              labels: {
-                "app.kubernetes.io/managed-by": "Kyverno"
-                "namespace-name": "request.object.metadata.namespace
-                "node-name": "request.object.spec.nodeName"
+            metadata: Object.metadata{
+              labels: Object.metadata.labels{
+                `app.kubernetes.io/managed-by`: "Kyverno",
+                `namespace-name`: object.metadata.namespace,
+                `node-name`: object.spec.nodeName
               }
             }
           }

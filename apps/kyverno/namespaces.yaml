@@ -1,0 +1,4 @@
+apiVersions: v1
+Kind: Namespace
+metadata:
+  name: kyverno

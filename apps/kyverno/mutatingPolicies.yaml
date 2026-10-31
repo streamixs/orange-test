@@ -7,17 +7,17 @@ spec:
   evaluation:
     mutateExisting:
       enabled: true
-  # Trigger après scheduling : l'EndpointSlice n'existe qu'une fois le Pod placé.
+  # Trigger après scheduling : le kubelet met à jour pods/status une fois le Pod placé.
   matchConstraints:
     resourceRules:
-      - apiGroups: ["discovery.k8s.io"]
+      - apiGroups: [""]
         apiVersions: ["v1"]
-        resources: ["endpointslices"]
-        operations: ["CREATE", "UPDATE"]
+        resources: ["pods/status"]
+        operations: ["UPDATE"]
     namespaceSelector:
       matchLabels:
         kubernetes.io/metadata.name: online-boutique
-  # Cible : les Pods. Object = le Pod cible, donc spec.nodeName est rempli.
+  # Cible : les Pods. object = le Pod cible, donc spec.nodeName est rempli.
   targetMatchConstraints:
     resourceRules:
       - apiGroups: [""]
@@ -27,6 +27,10 @@ spec:
     namespaceSelector:
       matchLabels:
         kubernetes.io/metadata.name: online-boutique
+  # Ne cible que les Pods déjà schedulés (spec.nodeName présent).
+  targetMatchConditions:
+    - name: scheduled
+      expression: has(object.spec.nodeName)
   mutations:
     - patchType: ApplyConfiguration
       applyConfiguration:
